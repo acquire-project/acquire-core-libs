@@ -20,6 +20,8 @@ extern "C"
                                 const struct StorageProperties* settings);
         void (*get)(const struct Storage* self,
                     struct StorageProperties* settings);
+        void (*get_meta)(const struct Storage* self,
+                         struct StoragePropertyMetadata* metadata);
         enum DeviceState (*start)(struct Storage* self);
 
         /// @brief Append data in [frame,frame+*nbytes) to Storage

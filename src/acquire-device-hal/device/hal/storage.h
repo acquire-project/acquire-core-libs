@@ -22,6 +22,10 @@ extern "C"
     enum DeviceStatusCode storage_get(const struct Storage* self,
                                       struct StorageProperties* settings);
 
+    enum DeviceStatusCode storage_get_meta(
+      const struct Storage* self,
+      struct StoragePropertyMetadata* meta);
+
     /// @brief Append data in `[beg,end)` to Storage
     /// @param[in] beg The beginning of the packet of frames to write.
     /// @param[in] end The end of the packet of frames to write.

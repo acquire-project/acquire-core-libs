@@ -129,6 +129,18 @@ Error:
 }
 
 enum DeviceStatusCode
+storage_get_meta(const struct Storage* self,
+                 struct StoragePropertyMetadata* meta)
+{
+    CHECK(self);
+    CHECK(self->get_meta);
+    self->get_meta(self, meta);
+    return Device_Ok;
+Error:
+    return Device_Err;
+}
+
+enum DeviceStatusCode
 storage_append(struct Storage* self,
                const struct VideoFrame* beg,
                const struct VideoFrame* end)
