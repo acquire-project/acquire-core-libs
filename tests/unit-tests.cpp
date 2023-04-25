@@ -67,6 +67,8 @@ extern "C"
     // device-properties
     int unit_test__storage__storage_property_string_check();
     int unit_test__storage__copy_string();
+    int unit_test__storage_properties_set_chunking_props();
+    int unit_test__storage_properties_set_compression_props();
     int unit_test__device_state_as_string__is_defined_for_all();
     int unit_test__device_kind_as_string__is_defined_for_all();
 }
@@ -89,6 +91,8 @@ main()
         CASE(unit_test__monotonic_clock_increases_monotonically),
         CASE(unit_test__storage__storage_property_string_check),
         CASE(unit_test__storage__copy_string),
+        CASE(unit_test__storage_properties_set_chunking_props),
+        CASE(unit_test__storage_properties_set_compression_props),
         CASE(unit_test__device_state_as_string__is_defined_for_all),
         CASE(unit_test__device_kind_as_string__is_defined_for_all),
 #undef CASE

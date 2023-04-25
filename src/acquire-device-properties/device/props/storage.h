@@ -2,6 +2,7 @@
 #define H_ACQUIRE_PROPS_STORAGE_V0
 
 #include "components.h"
+#include "metadata.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -17,7 +18,50 @@ extern "C"
         struct String external_metadata_json;
         uint32_t first_frame_id;
         struct PixelScale pixel_scale_um;
-        uint32_t bytes_per_chunk;
+        struct ImageShape image_shape;
+        struct storage_properties_chunking_s
+        {
+            uint32_t bytes_per_chunk;
+            uint32_t tile_width;
+            uint32_t tile_height;
+            uint32_t tile_planes;
+        } chunking;
+        struct storage_properties_compression_s
+        {
+            struct String codec_id;
+            int clevel;
+            int shuffle;
+        } compression;
+    };
+
+    struct StoragePropertyMetadata
+    {
+        struct storage_property_metadata_file_control_s
+        {
+            uint8_t supported;
+            char default_extension[8];
+        } file_control;
+        struct Property external_metadata;
+        struct Property first_frame_id;
+        struct storage_property_metadata_pixel_scale_s
+        {
+            struct Property x;
+            struct Property y;
+        } pixel_scale;
+        struct storage_property_metadata_chunking_s
+        {
+            uint8_t supported;
+            struct Property bytes_per_chunk;
+            struct Property tile_width;
+            struct Property tile_height;
+            struct Property tile_planes;
+        } chunking;
+        struct storage_property_metadata_compression_s
+        {
+            uint8_t supported;
+            struct Property clevel;
+            struct Property shuffle;
+        } compression;
     };
 
     /// Initializes StorageProperties, allocating string storage on the heap
@@ -35,16 +79,13 @@ extern "C"
     /// @param[in] bytes_of_metadata Number of bytes in the `metadata` buffer
     ///                              including the terminating null.
     /// @param[in] pixel_scale_um The pixel scale or size in microns.
-    /// @param[in] bytes_per_chunk The size, in bytes, of a chunk file, if
-    /// applicable.
     int storage_properties_init(struct StorageProperties* out,
                                 uint32_t first_frame_id,
                                 const char* filename,
                                 size_t bytes_of_filename,
                                 const char* metadata,
                                 size_t bytes_of_metadata,
-                                const struct PixelScale pixel_scale_um,
-                                uint32_t bytes_per_chunk);
+                                struct PixelScale pixel_scale_um);
 
     /// Copies contents, reallocating string storage if necessary.
     /// @returns 1 on success, otherwise 0
@@ -75,6 +116,38 @@ extern "C"
     int storage_properties_set_external_metadata(struct StorageProperties* out,
                                                  const char* metadata,
                                                  size_t bytes_of_metadata);
+
+    /// @brief Set chunking properties for `out`.
+    /// Convenience function to set tiling/chunking properties in a single call.
+    /// @returns 1 on success, otherwise 0
+    /// @param[in, out] out The storage properties to change.
+    /// @param[in] tile_width The width, in px, of a tile.
+    /// @param[in] tile_height The height, in px, of a tile.
+    /// @param[in] tile_planes The number of @p tile_width x @p tile_height
+    ///            planes in a single tile.
+    /// @param[in] bytes_per_chunk The maximum size, in bytes, of a chunk.
+    int storage_properties_set_chunking_props(struct StorageProperties* out,
+                                              uint32_t tile_width,
+                                              uint32_t tile_height,
+                                              uint32_t tile_planes,
+                                              uint32_t bytes_per_chunk);
+
+    /// @brief Set chunking properties for `out`.
+    /// Convenience function to set compression properties in a single call.
+    /// Copies the @p codec_id string into storage owned by the properties
+    /// struct.
+    /// @returns 1 on success, otherwise 0
+    /// @param[in, out] out The storage properties to change.
+    /// @param[in] codec_id Pointer to the beginning of the codec name buffer.
+    /// @param[in] bytes_of_codec_id The number of bytes in the codec name
+    ///                              buffer. Should include a terminating NULL.
+    /// @param[in] clevel The desired compression level.
+    /// @param[in] shuffle The desired type of shuffling to perform.
+    int storage_properties_set_compression_props(struct StorageProperties* out,
+                                                 const char* codec_id,
+                                                 size_t bytes_of_codec_id,
+                                                 int clevel,
+                                                 int shuffle);
 
     /// Free's allocated string storage.
     void storage_properties_destroy(struct StorageProperties* self);
