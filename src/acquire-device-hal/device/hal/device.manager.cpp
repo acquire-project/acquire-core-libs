@@ -255,7 +255,7 @@ device_manager_destroy(struct DeviceManager* self_)
     try {
         EXPECT(self_, "Expected non-NULL pointer for `self`");
         EXPECT(self_->impl, "Expected non-NULL pointer for `self->impl`");
-        struct DeviceManagerV0* self = (struct DeviceManagerV0*)self_->impl;
+        auto* self = (DeviceManagerV0*)self_->impl;
         delete self;
         self_->impl = 0;
         return Device_Ok;
@@ -274,7 +274,7 @@ device_manager_count(const struct DeviceManager* self_)
     try {
         EXPECT(self_, "Expected non-NULL pointer for `self`");
         EXPECT(self_->impl, "Expected non-NULL pointer for `self->impl`");
-        struct DeviceManagerV0* self = (struct DeviceManagerV0*)self_->impl;
+        auto* self = (DeviceManagerV0*)self_->impl;
         return uint32_t(self->count());
     } catch (std::exception& e) {
         LOGE(e.what());
@@ -293,7 +293,7 @@ device_manager_get(struct DeviceIdentifier* out,
     try {
         EXPECT(self_, "Expected non-NULL pointer for `self`");
         EXPECT(self_->impl, "Expected non-NULL pointer for `self->impl`");
-        struct DeviceManagerV0* self = (struct DeviceManagerV0*)self_->impl;
+        auto* self = (DeviceManagerV0*)self_->impl;
         memcpy(out, self->get(index), sizeof(*out));
         return Device_Ok;
     } catch (std::exception& e) {
@@ -312,7 +312,7 @@ device_manager_get_driver(const struct DeviceManager* self_,
     try {
         EXPECT(self_, "Expected non-NULL pointer for `self`");
         EXPECT(self_->impl, "Expected non-NULL pointer for `self->impl`");
-        struct DeviceManagerV0* self = (struct DeviceManagerV0*)self_->impl;
+        auto* self = (DeviceManagerV0*)self_->impl;
         return self->get_driver(identifier);
     } catch (std::exception& e) {
         LOGE(e.what());
@@ -333,7 +333,7 @@ device_manager_select_inner_(const struct DeviceManager* self_,
     try {
         EXPECT(self_, "Expected non-NULL pointer for `self`");
         EXPECT(self_->impl, "Expected non-NULL pointer for `self->impl`");
-        struct DeviceManagerV0* self = (struct DeviceManagerV0*)self_->impl;
+        auto* self = (DeviceManagerV0*)self_->impl;
 
         std::string name;
         if (name_ && bytes_of_name) {

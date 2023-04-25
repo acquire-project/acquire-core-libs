@@ -28,9 +28,9 @@ int
 main(int n, char** args)
 {
     int error_code = 0;
-    struct Driver driver;
-    struct Camera camera;
-    struct Storage storage;
+    struct Driver driver = {};
+    struct Camera camera = {};
+    struct Storage storage = {};
 
     // If these fail, you may need a version bump on the interface.
     ASSERT_EQ(int, "%d", sizeof(struct Driver), 40);
