@@ -65,6 +65,12 @@ camera_close(struct Camera* self)
 Error:;
 }
 
+static uint8_t
+max_u8(uint8_t a, uint8_t b)
+{
+    return a > b ? a : b;
+}
+
 // Validates and sets any properties.
 // The set function returns the new state that the self is in.
 // This may depend on how validation went.
@@ -75,6 +81,7 @@ camera_set(struct Camera* self, struct CameraProperties* settings)
     // Neither can be NULL
     CHECK(self);
     CHECK(settings);
+    settings->binning = max_u8(1, settings->binning);
     switch (ecode = self->set(self, settings)) {
         case Device_Ok:
             if (self->state != DeviceState_Running)

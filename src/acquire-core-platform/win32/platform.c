@@ -10,8 +10,8 @@
 #define LOG(...) L(0, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
 #define LOGE(...) L(1, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
 
-#define TRACE(...) L(0, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
-// #define TRACE(...)
+// #define TRACE(...) L(0, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
+#define TRACE(...)
 
 #define EXPECT(e, ...)                                                         \
     do {                                                                       \

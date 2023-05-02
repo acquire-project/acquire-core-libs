@@ -130,6 +130,7 @@ extern "C"
             uint64_t hardware;
             uint64_t acq_thread;
         } timestamps;
+#pragma warning(suppress : 4200)
         uint8_t data[];
     };
 

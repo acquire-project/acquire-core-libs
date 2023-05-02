@@ -28,7 +28,8 @@
             LOGE("Expression evaluated as false:\n\t%s", #e);                  \
         }                                                                      \
     } while (0)
-#define DEBUG(...) // LOG(__VA_ARGS__)
+// #define DEBUG(...) LOG(__VA_ARGS__)
+#define DEBUG(...)
 
 namespace {
 
@@ -41,11 +42,11 @@ enum class State
 class DeviceManagerV0
 {
   public:
-    DeviceManagerV0(void (*reporter)(int is_error,
-                                     const char* file,
-                                     int line,
-                                     const char* function,
-                                     const char* msg));
+    explicit DeviceManagerV0(void (*reporter)(int is_error,
+                                              const char* file,
+                                              int line,
+                                              const char* function,
+                                              const char* msg));
 
     DeviceManagerV0(DeviceManagerV0 const&) = delete;
     ~DeviceManagerV0();
@@ -211,7 +212,7 @@ DeviceManagerV0::select(DeviceKind kind, const std::string& name) const
                     (const char8_t*)identifier.identifier_.name)),
                   name.empty() ? "(empty)" : name.c_str(),
                   name_match ? "==" : "!=",
-                  identifier.identifier_.name);
+                  identifier.identifier_.name)
 
             if (name_match) {
                 LOG("Selecting (%d,%d) for %s \"%s\"",
@@ -255,7 +256,7 @@ device_manager_destroy(struct DeviceManager* self_)
     try {
         EXPECT(self_, "Expected non-NULL pointer for `self`");
         EXPECT(self_->impl, "Expected non-NULL pointer for `self->impl`");
-        auto* self = (DeviceManagerV0*)self_->impl;
+        auto self = (DeviceManagerV0*)self_->impl;
         delete self;
         self_->impl = 0;
         return Device_Ok;
@@ -274,7 +275,7 @@ device_manager_count(const struct DeviceManager* self_)
     try {
         EXPECT(self_, "Expected non-NULL pointer for `self`");
         EXPECT(self_->impl, "Expected non-NULL pointer for `self->impl`");
-        auto* self = (DeviceManagerV0*)self_->impl;
+        auto self = (DeviceManagerV0*)self_->impl;
         return uint32_t(self->count());
     } catch (std::exception& e) {
         LOGE(e.what());
@@ -293,7 +294,7 @@ device_manager_get(struct DeviceIdentifier* out,
     try {
         EXPECT(self_, "Expected non-NULL pointer for `self`");
         EXPECT(self_->impl, "Expected non-NULL pointer for `self->impl`");
-        auto* self = (DeviceManagerV0*)self_->impl;
+        auto self = (DeviceManagerV0*)self_->impl;
         memcpy(out, self->get(index), sizeof(*out));
         return Device_Ok;
     } catch (std::exception& e) {
