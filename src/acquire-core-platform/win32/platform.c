@@ -404,13 +404,13 @@ event_destroy(struct event* self)
 void
 event_notify_all(struct event* self)
 {
-    SetEvent(&self->inner_);
+    SetEvent(self->inner_);
 }
 
 void
 event_wait(struct event* self)
 {
-    WaitForSingleObject(&self->inner_, INFINITE);
+    WaitForSingleObject(self->inner_, INFINITE);
 }
 
 void
