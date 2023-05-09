@@ -18,8 +18,8 @@
     } while (0)
 #define CHECK(e) EXPECT(e, "Expression was false:\n\t%s\n", #e)
 
-// #define TRACE(...)
-#define TRACE(...) LOG(__VA_ARGS__)
+#define TRACE(...)
+// #define TRACE(...) LOG(__VA_ARGS__)
 
 typedef struct Driver* (*driver_init_proc_t)(
   void (*reporter)(int is_error,
@@ -110,13 +110,13 @@ driver_load(const char* relative_path,
 
     TRACE("LOADER: REQUEST %s", relative_path);
     EXPECT(lib_open_by_name(&self->lib, relative_path),
-           "Failed to load driver at \"%s\"",
+           "Failed to load driver at \"%s\".",
            relative_path);
 
     driver_init_proc_t init = 0;
     const char* const entry_point = "acquire_driver_init_v0";
     EXPECT(init = lib_load(&self->lib, entry_point),
-           "Could not locate driver entry point \"%s\" in \"%s\"",
+           "Entry point not found for driver. Missing \"%s\" in \"%s\"",
            entry_point,
            relative_path);
 

@@ -13,14 +13,18 @@
 // #define TRACE(...) L(0, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
 #define TRACE(...)
 
-#define EXPECT(e, ...)                                                         \
+#define EXPECT_INNER(LOGGER, e, ...)                                           \
     do {                                                                       \
         if (!(e)) {                                                            \
-            LOGE(__VA_ARGS__);                                                 \
+            LOGGER(__VA_ARGS__);                                               \
             goto Error;                                                        \
         }                                                                      \
     } while (0)
+#define EXPECT(e, ...) EXPECT_INNER(LOGE, e, __VA_ARGS__)
 #define CHECK(e) EXPECT(e, "Expression evaluated as false:\n\t%s", #e)
+#define EXPECT_SILENT(e, ...) EXPECT_INNER(TRACE, e, __VA_ARGS__)
+#define CHECK_SILENT(e)                                                        \
+    EXPECT_SILENT(e, "Expression evaluated as false:\n\t%s", #e)
 
 #define CHECK_WARN(e)                                                          \
     do {                                                                       \
@@ -400,13 +404,13 @@ event_destroy(struct event* self)
 void
 event_notify_all(struct event* self)
 {
-    SetEvent(&self->inner_);
+    SetEvent(self->inner_);
 }
 
 void
 event_wait(struct event* self)
 {
-    WaitForSingleObject(&self->inner_, INFINITE);
+    WaitForSingleObject(self->inner_, INFINITE);
 }
 
 void
@@ -444,10 +448,10 @@ int
 lib_open(struct lib* self, const char* absolute_path)
 {
     CHECK(self);
-    EXPECT(self->inner = LoadLibraryA(absolute_path),
-           "Failed to load %s. Error: %s",
-           absolute_path,
-           errstr());
+    EXPECT_SILENT(self->inner = LoadLibraryA(absolute_path),
+                  "Failed to load %s. Error: %s",
+                  absolute_path,
+                  errstr());
     TRACE("LOADED %s", absolute_path);
     return 1;
 Error:
@@ -537,7 +541,7 @@ lib_open_by_name(struct lib* self, const char* name)
 
     const char* parts[] = { path, name, ".dll", NULL };
     CHECK(fullpath = join(parts));
-    CHECK(lib_open(self, fullpath));
+    CHECK_SILENT(lib_open(self, fullpath));
 
 Finalize:
     if (fullpath)

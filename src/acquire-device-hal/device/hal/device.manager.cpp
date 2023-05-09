@@ -199,7 +199,8 @@ DeviceManagerV0::get_driver(const struct DeviceIdentifier* identifier)
 const struct DeviceIdentifier*
 DeviceManagerV0::select(DeviceKind kind, const std::string& name) const
 {
-    std::regex re(name.c_str());
+    std::regex re(name.c_str(),
+                  std::regex_constants::icase | std::regex_constants::optimize);
     for (const auto& identifier : identifiers_) {
         if (identifier.identifier_.kind == kind) {
             // regex match for name

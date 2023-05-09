@@ -49,21 +49,6 @@ storage_validate(const struct DeviceManager* system,
         EXPECT(identifier->kind == DeviceKind_Storage,
                "Expected a Storage device. Got %s.",
                device_kind_as_string(identifier->kind));
-        // Verify that the (driver_id,device_id) correspond to
-        // this identifier. Otherwise, a user could set up an inconsistent
-        // identifier.
-        {
-            struct DeviceIdentifier selected = { 0 };
-            CHECK(Device_Ok ==
-                  device_manager_select(
-                    system,
-                    identifier->kind,
-                    identifier->name,
-                    strnlen(identifier->name, sizeof(identifier->name)),
-                    &selected));
-            CHECK(selected.driver_id == identifier->driver_id &&
-                  selected.device_id == identifier->device_id);
-        }
         CHECK(Device_Ok ==
               driver_open_device(device_manager_get_driver(system, identifier),
                                  identifier->device_id,
