@@ -1,5 +1,7 @@
 # Acquire Core Libraries
 
+[![Tests](https://github.com/acquire-project/acquire-core-libs/actions/workflows/test_pr.yml/badge.svg)](https://github.com/acquire-project/acquire-core-libs/actions/workflows/test_pr.yml)
+
 This builds the core static libraries that get used in other parts of Acquire.
 For the most part, these are interfaces private to Acquire, although there are
 some exceptions.
