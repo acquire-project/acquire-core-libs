@@ -26,12 +26,6 @@ extern "C"
             uint32_t tile_height;
             uint32_t tile_planes;
         } chunking;
-        struct storage_properties_compression_s
-        {
-            struct String codec_id;
-            int clevel;
-            int shuffle;
-        } compression;
     };
 
     struct StoragePropertyMetadata
@@ -41,6 +35,7 @@ extern "C"
             uint8_t supported;
             char default_extension[8];
         } file_control;
+
         struct Property external_metadata;
         struct Property first_frame_id;
         struct storage_property_metadata_pixel_scale_s
@@ -52,16 +47,10 @@ extern "C"
         {
             uint8_t supported;
             struct Property bytes_per_chunk;
-            struct Property tile_width;
-            struct Property tile_height;
-            struct Property tile_planes;
+            struct storage_property_metadata_chunk_dim_s {
+                struct Property width,height,planes;
+            } tile;
         } chunking;
-        struct storage_property_metadata_compression_s
-        {
-            uint8_t supported;
-            struct Property clevel;
-            struct Property shuffle;
-        } compression;
     };
 
     /// Initializes StorageProperties, allocating string storage on the heap
@@ -132,22 +121,6 @@ extern "C"
                                               uint32_t tile_planes,
                                               uint32_t bytes_per_chunk);
 
-    /// @brief Set chunking properties for `out`.
-    /// Convenience function to set compression properties in a single call.
-    /// Copies the @p codec_id string into storage owned by the properties
-    /// struct.
-    /// @returns 1 on success, otherwise 0
-    /// @param[in, out] out The storage properties to change.
-    /// @param[in] codec_id Pointer to the beginning of the codec name buffer.
-    /// @param[in] bytes_of_codec_id The number of bytes in the codec name
-    ///                              buffer. Should include a terminating NULL.
-    /// @param[in] clevel The desired compression level.
-    /// @param[in] shuffle The desired type of shuffling to perform.
-    int storage_properties_set_compression_props(struct StorageProperties* out,
-                                                 const char* codec_id,
-                                                 size_t bytes_of_codec_id,
-                                                 int clevel,
-                                                 int shuffle);
 
     /// Free's allocated string storage.
     void storage_properties_destroy(struct StorageProperties* self);
