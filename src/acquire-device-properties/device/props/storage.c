@@ -79,33 +79,15 @@ storage_properties_set_chunking_props(struct StorageProperties* out,
                                       uint32_t tile_width,
                                       uint32_t tile_height,
                                       uint32_t tile_planes,
-                                      uint32_t bytes_per_chunk)
+                                      uint32_t max_bytes_per_chunk)
 {
     CHECK(out);
-    out->chunking.tile_width = tile_width;
-    out->chunking.tile_height = tile_height;
-    out->chunking.tile_planes = tile_planes;
+    out->chunking.tile.width = tile_width;
+    out->chunking.tile.height = tile_height;
+    out->chunking.tile.planes = tile_planes;
     // Use 16 MB default chunk size if 0 is passed in.
-    out->chunking.bytes_per_chunk =
-      bytes_per_chunk ? bytes_per_chunk : (1ULL << 24);
-    return 1;
-Error:
-    return 0;
-}
-
-int
-storage_properties_set_compression_props(struct StorageProperties* out,
-                                         const char* codec_id,
-                                         size_t bytes_of_codec_id,
-                                         int clevel,
-                                         int shuffle)
-{
-    const struct String s = { .is_ref = 1,
-                              .nbytes = bytes_of_codec_id,
-                              .str = (char*)codec_id };
-    CHECK(copy_string(&out->compression.codec_id, &s));
-    out->compression.clevel = clevel;
-    out->compression.shuffle = shuffle;
+    out->chunking.max_bytes_per_chunk =
+      max_bytes_per_chunk ? max_bytes_per_chunk : (1ULL << 24);
     return 1;
 Error:
     return 0;
@@ -165,8 +147,7 @@ void
 storage_properties_destroy(struct StorageProperties* self)
 {
     struct String* const strings[] = { &self->filename,
-                                       &self->external_metadata_json,
-                                       &self->compression.codec_id };
+                                       &self->external_metadata_json };
     for (int i = 0; i < countof(strings); ++i) {
         if (strings[i]->is_ref == 0 && strings[i]->str) {
             free(strings[i]->str);
@@ -361,48 +342,20 @@ int
 unit_test__storage_properties_set_chunking_props()
 {
     struct StorageProperties props = { 0 };
-    CHECK(0 == props.chunking.tile_width);
-    CHECK(0 == props.chunking.tile_height);
-    CHECK(0 == props.chunking.tile_planes);
-    CHECK(0 == props.chunking.bytes_per_chunk);
+    CHECK(0 == props.chunking.tile.width);
+    CHECK(0 == props.chunking.tile.height);
+    CHECK(0 == props.chunking.tile.planes);
+    CHECK(0 == props.chunking.max_bytes_per_chunk);
 
     const uint32_t tile_width = 1, tile_height = 2, tile_planes = 3;
     CHECK(storage_properties_set_chunking_props(
       &props, tile_width, tile_height, tile_planes, 0));
 
-    CHECK(tile_width == props.chunking.tile_width);
-    CHECK(tile_height == props.chunking.tile_height);
-    CHECK(tile_planes == props.chunking.tile_planes);
+    CHECK(tile_width == props.chunking.tile.width);
+    CHECK(tile_height == props.chunking.tile.height);
+    CHECK(tile_planes == props.chunking.tile.planes);
     // This is the default value if you set bytes_per_chunk to 0
-    CHECK((1ULL << 24) == props.chunking.bytes_per_chunk);
-
-    storage_properties_destroy(&props);
-
-    return 1;
-Error:
-    return 0;
-}
-
-int
-unit_test__storage_properties_set_compression_props()
-{
-    struct StorageProperties props = { 0 };
-
-    CHECK(NULL == props.compression.codec_id.str);
-    CHECK(0 == props.compression.codec_id.nbytes);
-    CHECK(0 == props.compression.clevel);
-    CHECK(0 == props.compression.shuffle);
-
-    const char* codec_id = "zstd";
-    const int clevel = 1, shuffle = 2;
-    CHECK(storage_properties_set_compression_props(
-      &props, codec_id, 5, clevel, shuffle));
-
-    CHECK(0 == strcmp(props.compression.codec_id.str, "zstd"));
-    CHECK(5 == props.compression.codec_id.nbytes);
-    CHECK(0 == props.compression.codec_id.is_ref);
-    CHECK(clevel == props.compression.clevel);
-    CHECK(shuffle == props.compression.shuffle);
+    CHECK((1ULL << 24) == props.chunking.max_bytes_per_chunk);
 
     storage_properties_destroy(&props);
 

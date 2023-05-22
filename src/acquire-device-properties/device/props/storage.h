@@ -18,37 +18,33 @@ extern "C"
         struct String external_metadata_json;
         uint32_t first_frame_id;
         struct PixelScale pixel_scale_um;
-        struct ImageShape image_shape;
+
+        /// Parameters for chunking.
+        /// Tile dimensions, width, height, and planes, are in pixels and
+        /// determine how to break up frames. Together with
+        /// `max_bytes_per_chunk`, they determine the dimensions of a chunk.
         struct storage_properties_chunking_s
         {
-            uint32_t bytes_per_chunk;
-            uint32_t tile_width;
-            uint32_t tile_height;
-            uint32_t tile_planes;
+            uint32_t max_bytes_per_chunk;
+            struct storage_properties_chunking_tile_s
+            {
+                uint32_t width, height, planes;
+            } tile;
         } chunking;
     };
 
     struct StoragePropertyMetadata
     {
-        struct storage_property_metadata_file_control_s
-        {
-            uint8_t supported;
-            char default_extension[8];
-        } file_control;
-
-        struct Property external_metadata;
-        struct Property first_frame_id;
-        struct storage_property_metadata_pixel_scale_s
-        {
-            struct Property x;
-            struct Property y;
-        } pixel_scale;
+        /// Metadata for chunking.
+        /// Indicates whether chunking is supported, and if so, bounds on the
+        /// dimensions of tiles and the maximum number of bytes per chunk.
         struct storage_property_metadata_chunking_s
         {
             uint8_t supported;
-            struct Property bytes_per_chunk;
-            struct storage_property_metadata_chunk_dim_s {
-                struct Property width,height,planes;
+            struct Property max_bytes_per_chunk;
+            struct storage_property_metadata_chunk_dim_s
+            {
+                struct Property width, height, planes;
             } tile;
         } chunking;
     };
@@ -114,13 +110,12 @@ extern "C"
     /// @param[in] tile_height The height, in px, of a tile.
     /// @param[in] tile_planes The number of @p tile_width x @p tile_height
     ///            planes in a single tile.
-    /// @param[in] bytes_per_chunk The maximum size, in bytes, of a chunk.
+    /// @param[in] max_bytes_per_chunk The maximum size, in bytes, of a chunk.
     int storage_properties_set_chunking_props(struct StorageProperties* out,
                                               uint32_t tile_width,
                                               uint32_t tile_height,
                                               uint32_t tile_planes,
-                                              uint32_t bytes_per_chunk);
-
+                                              uint32_t max_bytes_per_chunk);
 
     /// Free's allocated string storage.
     void storage_properties_destroy(struct StorageProperties* self);
