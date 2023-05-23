@@ -38,6 +38,11 @@ extern "C"
         // Only call this from within storage.driver.c.
         // Should really be private to that module.
         void (*destroy)(struct Storage* self);
+
+        /// @brief Alert the storage device to expect a particular image shape.
+        /// @param shape [in] The image shape to expect.
+        void (*reserve_image_shape)(struct Storage* self,
+                                    const struct ImageShape* shape);
     };
 
 #ifdef __cplusplus

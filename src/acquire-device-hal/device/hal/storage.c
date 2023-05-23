@@ -174,3 +174,15 @@ storage_get_state(const struct Storage* const self)
 Error:
     return DeviceState_Closed;
 }
+
+enum DeviceStatusCode
+storage_reserve_image_shape(struct Storage* self,
+                            const struct ImageShape* shape)
+{
+    CHECK(self);
+    CHECK(self->reserve_image_shape);
+    self->reserve_image_shape(self, shape);
+    return Device_Ok;
+Error:
+    return Device_Err;
+}

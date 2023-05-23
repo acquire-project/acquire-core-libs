@@ -37,6 +37,12 @@ extern "C"
 
     enum DeviceState storage_get_state(const struct Storage* self);
 
+    /// @brief Alert the storage device to expect a particular image shape.
+    /// @param shape [in] The image shape to expect.
+    enum DeviceStatusCode storage_reserve_image_shape(
+      struct Storage* self,
+      const struct ImageShape* shape);
+
 #ifdef __cplusplus
 }
 #endif
