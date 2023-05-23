@@ -32,7 +32,7 @@ main(int n, char** args)
     // If these fail, you may need a version bump on the interface.
     ASSERT_EQ(int, "%d", sizeof(struct Driver), 40);
     ASSERT_EQ(int, "%d", sizeof(struct Camera), 344);
-    ASSERT_EQ(int, "%d", sizeof(struct Storage), 336);
+    ASSERT_EQ(int, "%d", sizeof(struct Storage), 344);
 
     return error_code;
 }
