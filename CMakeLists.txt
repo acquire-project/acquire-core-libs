@@ -14,4 +14,4 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(src)
 add_subdirectory(tests)
 
-include(CPack)
+include(cmake/cpack.cmake)
