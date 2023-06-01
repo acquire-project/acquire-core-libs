@@ -19,8 +19,5 @@ target_link_libraries(${tgt} PRIVATE
         acquire-core-logger
         acquire-core-platform
 )
-set_target_properties(${tgt} PROPERTIES
-        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
-)
 
 install(TARGETS ${tgt} FILE_SET HEADERS)

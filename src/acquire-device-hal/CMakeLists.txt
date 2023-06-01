@@ -12,20 +12,17 @@ add_library(${tgt} STATIC
         device/hal/experimental/stage.axis.c
         device/hal/storage.h
         device/hal/storage.c
-        )
+)
 target_sources(${tgt} PUBLIC FILE_SET HEADERS
         BASE_DIRS "${CMAKE_CURRENT_LIST_DIR}"
         FILES
         device/hal/device.manager.h
-        )
+)
 target_link_libraries(${tgt} PRIVATE
         acquire-device-kit
         acquire-core-logger
         acquire-core-platform
-        )
+)
 target_include_directories(${tgt} PUBLIC "${CMAKE_CURRENT_LIST_DIR}")
-set_target_properties(${tgt} PROPERTIES
-        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
-        )
 
 install(TARGETS ${tgt} FILE_SET HEADERS)
