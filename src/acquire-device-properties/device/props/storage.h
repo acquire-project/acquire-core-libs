@@ -25,7 +25,7 @@ extern "C"
         /// `max_bytes_per_chunk`, they determine the dimensions of a chunk.
         struct storage_properties_chunking_s
         {
-            uint32_t max_bytes_per_chunk;
+            uint64_t max_bytes_per_chunk;
             struct storage_properties_chunking_tile_s
             {
                 uint32_t width, height, planes;
@@ -115,7 +115,7 @@ extern "C"
                                               uint32_t tile_width,
                                               uint32_t tile_height,
                                               uint32_t tile_planes,
-                                              uint32_t max_bytes_per_chunk);
+                                              uint64_t max_bytes_per_chunk);
 
     /// Free's allocated string storage.
     void storage_properties_destroy(struct StorageProperties* self);
