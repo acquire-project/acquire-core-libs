@@ -25,7 +25,7 @@ extern "C"
         /// `max_bytes_per_chunk`, they determine the dimensions of a chunk.
         struct storage_properties_chunking_s
         {
-            uint32_t max_bytes_per_chunk;
+            uint64_t max_bytes_per_chunk;
             struct storage_properties_chunking_tile_s
             {
                 uint32_t width, height, planes;
@@ -136,7 +136,7 @@ extern "C"
                                               uint32_t tile_width,
                                               uint32_t tile_height,
                                               uint32_t tile_planes,
-                                              uint32_t max_bytes_per_chunk);
+                                              uint64_t max_bytes_per_chunk);
 
     /// @brief Set multiscale properties for `out`.
     /// Convenience function to set multiscale properties in a single call.

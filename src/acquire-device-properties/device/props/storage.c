@@ -79,7 +79,7 @@ storage_properties_set_chunking_props(struct StorageProperties* out,
                                       uint32_t tile_width,
                                       uint32_t tile_height,
                                       uint32_t tile_planes,
-                                      uint32_t max_bytes_per_chunk)
+                                      uint64_t max_bytes_per_chunk)
 {
     CHECK(out);
     out->chunking.tile.width = tile_width;
