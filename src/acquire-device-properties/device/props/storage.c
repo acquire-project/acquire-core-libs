@@ -95,19 +95,11 @@ Error:
 
 int
 storage_properties_set_multiscale_props(struct StorageProperties* out,
-                                        const char* strategy,
-                                        size_t bytes_of_strategy,
-                                        int16_t max_layer,
-                                        uint8_t downscale)
+                                        int16_t max_layer)
 {
     CHECK(out);
     out->multiscale.max_layer = max_layer;
-    out->multiscale.downscale = downscale;
-
-    const struct String s = { .is_ref = 1,
-                              .nbytes = bytes_of_strategy,
-                              .str = (char*)strategy };
-    return copy_string(&out->multiscale.strategy, &s);
+    return 1;
 Error:
     return 0;
 }

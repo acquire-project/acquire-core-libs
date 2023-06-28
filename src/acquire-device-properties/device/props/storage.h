@@ -33,16 +33,13 @@ extern "C"
         } chunking;
 
         /// Parameters for multiscale.
-        /// `strategy` is a string that determines how to downscale frames.
         /// `max_layer` is the maximum number of layers to generate, where 0 is
         /// the original resolution, 1 is the first downscale, etc. -1 means to
-        /// generate all possible layers.
-        /// `downscale` is the factor by which to downscale successive layers.
+        /// generate as many layers as will downsample the image to the tile
+        /// shape.
         struct storage_properties_multiscale_s
         {
-            struct String strategy;
             int16_t max_layer;
-            uint8_t downscale;
         } multiscale;
     };
 
@@ -64,9 +61,7 @@ extern "C"
         struct storage_property_metadata_multiscale_s
         {
             uint8_t supported;
-            struct Property strategy;
             struct Property max_layer;
-            struct Property downscale;
         } multiscale;
     };
 
@@ -142,18 +137,11 @@ extern "C"
     /// Convenience function to set multiscale properties in a single call.
     /// @returns 1 on success, otherwise 0
     /// @param[in, out] out The storage properties to change.
-    /// @param[in] strategy The strategy to use for multiscale.
-    /// @param[in] bytes_of_strategy The number of bytes in the strategy buffer.
-    ///                              Should include the terminating NULL.
     /// @param[in] max_layer The maximum number of multiscale layers to create,
     ///            where 0 is the base layer.
-    ///            -1 builds all possible layers.
-    /// @param[in] downscale The downscale factor to use for successive layers.
+    ///            -1 builds all possible layers, down to the tile size.
     int storage_properties_set_multiscale_props(struct StorageProperties* out,
-                                                const char* strategy,
-                                                size_t bytes_of_strategy,
-                                                int16_t max_layer,
-                                                uint8_t downscale);
+                                                int16_t max_layer);
 
     /// Free's allocated string storage.
     void storage_properties_destroy(struct StorageProperties* self);
