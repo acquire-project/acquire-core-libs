@@ -1,0 +1,29 @@
+name: Update `nightly` tag
+
+on:
+  schedule:
+    - cron: "0 5 * * *"  # runs at 5 AM UTC
+  push:
+    branches:
+      - ci-fixes # FIXME: remove this
+
+jobs:
+  nightly-tag:
+    name: Update `nightly` tag
+    runs-on: ubuntu-latest
+
+    permissions: write-all
+
+    steps:
+      - name: Checkout local repository
+        uses: actions/checkout@v3
+
+      - name: Update nightly tag
+        run: git tag -f nightly
+
+      - name: Push to protected branch
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.PAT }}
+          ref: refs/tags/nightly
+          unprotect_reviews: true

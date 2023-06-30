@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+      - "nightly"
+
+jobs:
+  release:
+    name: "Nightly Release"
+    runs-on: "ubuntu-latest"
+
+    permissions: write-all
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Tagged release
+        if: ${{ github.ref_name != 'nightly' }}
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ github.token }}
+          prerelease: false
+
+      - name: Nightly release
+        if: ${{ github.ref_name == 'nightly' }}
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ github.token }}
+          automatic_release_tag: "nightly"
+          prerelease: true
+          title: "Nightly Release"
