@@ -17,13 +17,11 @@ jobs:
     steps:
       - name: Checkout local repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT }}
 
       - name: Update nightly tag
         run: git tag -f nightly
 
-      - name: Push to protected branch
-        uses: CasperWA/push-protected@v2
-        with:
-          token: ${{ secrets.PAT }}
-          ref: refs/tags/nightly
-          unprotect_reviews: true
+      - name: Push tag
+        run: git push origin nightly --force
