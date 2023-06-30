@@ -2,10 +2,7 @@ name: Update `nightly` tag
 
 on:
   schedule:
-    - cron: "0 5 * * *"  # runs at 5 AM UTC
-  push:
-    branches:
-      - ci-fixes # FIXME: remove this
+    - cron: "30 3 * * *"  # runs at 3:30 AM UTC
 
 jobs:
   nightly-tag:
