@@ -3,9 +3,6 @@ name: Update nightly tag
 on:
   schedule:
     - cron: "* 4 * * *"  # runs at 4:00 AM UTC
-  push:
-    branches:
-      - main
 
 jobs:
   nightly-tag:
