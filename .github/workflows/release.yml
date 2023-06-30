@@ -43,7 +43,7 @@ jobs:
 
       - name: Test
         working-directory: ${{github.workspace}}/build
-        run: ctest -C ${{env.BUILD_TYPE}} -L acquire-core-libs --output-on-failure
+        run: ctest -C ${{env.BUILD_TYPE}} -L anyplatform --output-on-failure
 
   release:
     name: Release
