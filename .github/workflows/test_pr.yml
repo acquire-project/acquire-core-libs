@@ -12,7 +12,7 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  build:
+  test:
     name: ${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 10
@@ -22,7 +22,6 @@ jobs:
         platform: [ "windows-latest", "ubuntu-latest", "macos-latest" ]
     permissions:
       actions: write
-
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.10.0
@@ -49,5 +48,4 @@ jobs:
 
       - name: Test
         working-directory: ${{github.workspace}}/build
-        run: ctest -C ${{env.BUILD_TYPE}} -L anyplatform --output-on-failure
-
+        run: ctest -C ${{env.BUILD_TYPE}} -L acquire-core-libs --output-on-failure
