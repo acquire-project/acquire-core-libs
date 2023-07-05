@@ -129,7 +129,7 @@ extern "C"
     /// Convenience function to enable multiscale.
     /// @returns 1 on success, otherwise 0
     /// @param[in, out] out The storage properties to change.
-    /// @param[in] on A flag to enable or disable multiscale.
+    /// @param[in] enable A flag to enable or disable multiscale.
     int storage_properties_set_enable_multiscale(struct StorageProperties* out,
                                                  uint8_t enable);
 
