@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `acquire-device-properties`: A `struct storage_properties_multiscale_s` member `multiscale` to `StorageProperties`.
+- `acquire-device-properties`: A `uint8_t` member `enable_multiscale` of `StorageProperties`.
 - `acquire-device-properties`: A corresponding entry in `StoragePropertyMetadata`.
-- `acquire-device-properties`: A convenience function for setting multiscale properties, similar to the function for
+- `acquire-device-properties`: A convenience function for enabling multiscale, similar to the function for
   setting chunking properties.
 
 ## [0.1.3](https://github.com/acquire-project/acquire-core-libs/compare/v0.1.2...v0.1.3) - 2023-06-27

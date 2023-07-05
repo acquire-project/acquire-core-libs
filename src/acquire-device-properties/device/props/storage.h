@@ -32,15 +32,8 @@ extern "C"
             } tile;
         } chunking;
 
-        /// Parameters for multiscale.
-        /// `max_layer` is the maximum number of layers to generate, where 0 is
-        /// the original resolution, 1 is the first downscale, etc. -1 means to
-        /// generate as many layers as will downsample the image to the tile
-        /// shape.
-        struct storage_properties_multiscale_s
-        {
-            int16_t max_layer;
-        } multiscale;
+        /// Enable multiscale storage if true.
+        uint8_t enable_multiscale;
     };
 
     struct StoragePropertyMetadata
@@ -61,7 +54,6 @@ extern "C"
         struct storage_property_metadata_multiscale_s
         {
             uint8_t supported;
-            struct Property max_layer;
         } multiscale;
     };
 
@@ -134,14 +126,12 @@ extern "C"
                                               uint64_t max_bytes_per_chunk);
 
     /// @brief Set multiscale properties for `out`.
-    /// Convenience function to set multiscale properties in a single call.
+    /// Convenience function to enable multiscale.
     /// @returns 1 on success, otherwise 0
     /// @param[in, out] out The storage properties to change.
-    /// @param[in] max_layer The maximum number of multiscale layers to create,
-    ///            where 0 is the base layer.
-    ///            -1 builds all possible layers, down to the tile size.
-    int storage_properties_set_multiscale_props(struct StorageProperties* out,
-                                                int16_t max_layer);
+    /// @param[in] on A flag to enable or disable multiscale.
+    int storage_properties_set_multiscale_mode(struct StorageProperties* out,
+                                               uint8_t on);
 
     /// Free's allocated string storage.
     void storage_properties_destroy(struct StorageProperties* self);

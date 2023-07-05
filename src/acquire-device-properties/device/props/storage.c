@@ -94,11 +94,11 @@ Error:
 }
 
 int
-storage_properties_set_multiscale_props(struct StorageProperties* out,
-                                        int16_t max_layer)
+storage_properties_set_multiscale_mode(struct StorageProperties* out,
+                                       uint8_t on)
 {
     CHECK(out);
-    out->multiscale.max_layer = max_layer;
+    out->enable_multiscale = on;
     return 1;
 Error:
     return 0;
