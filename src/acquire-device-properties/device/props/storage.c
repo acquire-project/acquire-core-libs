@@ -94,11 +94,11 @@ Error:
 }
 
 int
-storage_properties_set_multiscale_mode(struct StorageProperties* out,
-                                       uint8_t on)
+storage_properties_set_enable_multiscale(struct StorageProperties* out,
+                                         uint8_t enable)
 {
     CHECK(out);
-    out->enable_multiscale = on;
+    out->enable_multiscale = enable;
     return 1;
 Error:
     return 0;

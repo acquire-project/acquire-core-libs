@@ -130,8 +130,8 @@ extern "C"
     /// @returns 1 on success, otherwise 0
     /// @param[in, out] out The storage properties to change.
     /// @param[in] on A flag to enable or disable multiscale.
-    int storage_properties_set_multiscale_mode(struct StorageProperties* out,
-                                               uint8_t on);
+    int storage_properties_set_enable_multiscale(struct StorageProperties* out,
+                                                 uint8_t enable);
 
     /// Free's allocated string storage.
     void storage_properties_destroy(struct StorageProperties* self);
