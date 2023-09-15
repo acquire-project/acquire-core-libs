@@ -4,7 +4,6 @@ cmake_policy(SET CMP0079 NEW) # use targets from other directories
 enable_testing()
 
 include(cmake/aq_require.cmake)
-include(cmake/git-versioning.cmake)
 include(cmake/ide.cmake)
 include(cmake/msvc.cmake)
 
