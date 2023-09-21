@@ -36,7 +36,7 @@
 int
 file_create(struct file* file, const char* filename, size_t bytesof_filename)
 {
-    file->fid = open(filename, O_RDWR | O_CREAT | O_EXCL | O_NONBLOCK, 0666);
+    file->fid = open(filename, O_RDWR | O_CREAT | O_EXLOCK | O_NONBLOCK, 0666);
     if (file->fid < 0)
         CHECK_POSIX(errno);
     return 1;
@@ -47,7 +47,8 @@ Error:
 void
 file_close(struct file* file)
 {
-    CHECK_POSIX(close(file->fid));
+    if (close(file->fid) < 0)
+        CHECK_POSIX(errno);
 Error:;
 }
 
@@ -77,6 +78,8 @@ int
 file_exists(const char* filename, size_t nbytes)
 {
     int ret = access(filename, F_OK);
+    if (ret == ENOENT)
+        return 0;
     if (ret < 0)
         CHECK_POSIX(errno);
     return ret == 0;
