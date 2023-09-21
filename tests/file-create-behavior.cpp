@@ -1,3 +1,5 @@
+//! Test that we can't create the same file for writing within this process
+//! using the file_create() platform api.
 #include "platform.h"
 #include "logger.h"
 
@@ -44,30 +46,40 @@ main(int argc, char** argv)
 {
     logger_set_reporter(reporter);
 
-    // precondition for test
-
-    struct file file;
     const char filename[] = "does-not-exist";
 
     remove(filename);
 
-    EXPECT(
-      0 == file_exists(SIZED(filename)),
-      "The file \"%s\" must not already be present at the start of this test.",
-      filename);
+    try {
+        struct file file;
 
-    EXPECT(file_create(&file, SIZED(filename)),
-           "Expected the first creation of \"%s\" to succeed.",
-           filename);
-    file_close(&file);
+        EXPECT(0 == file_exists(SIZED(filename)),
+               "The file \"%s\" must not already be present at the start of "
+               "this test.",
+               filename);
 
-    EXPECT(file_create(&file, SIZED(filename)),
-           "Expected creation of \"%s\" to succeed. It was previously created, "
-           "then closed, so it exists on the file system",
-           filename);
-    EXPECT(!file_create(&file, SIZED(filename)),
-           "Expected creation of \"%s\" to fail. It hasn't been closed yet.",
-           filename);
+        EXPECT(file_create(&file, SIZED(filename)),
+               "Expected the first creation of \"%s\" to succeed.",
+               filename);
+        file_close(&file);
 
-    return 0;
+        EXPECT(
+          file_create(&file, SIZED(filename)),
+          "Expected creation of \"%s\" to succeed. It was previously created, "
+          "then closed, so it exists on the file system",
+          filename);
+        EXPECT(
+          !file_create(&file, SIZED(filename)),
+          "Expected creation of \"%s\" to fail. It hasn't been closed yet.",
+          filename);
+
+        remove(filename);
+        return 0;
+    } catch (const std::exception& e) {
+        ERR("%s", e.what());
+    } catch (...) {
+        ERR("Unknown exception");
+    }
+    remove(filename);
+    return 1;
 }
