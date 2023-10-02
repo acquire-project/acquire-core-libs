@@ -2,6 +2,7 @@ set(tgt acquire-device-properties)
 add_library(${tgt} STATIC
         device/props/device.c
         device/props/storage.c
+        device/props/components.c
 )
 target_sources(${tgt} PUBLIC FILE_SET HEADERS
         BASE_DIRS "${CMAKE_CURRENT_LIST_DIR}"
