@@ -2,7 +2,7 @@
 
 *Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.*
 
-## Related Issue(s)
+## Related issue(s)
 
 - Issue: #<issue_number_here>
 - See also:
@@ -16,39 +16,12 @@
 - [ ] Documentation
 - [ ] Other (please describe):
 
-# Changes
-
-## Added
-
-- 
-
-## Changed
-
-- 
-
-## Deprecated
-
-- 
-
-## Removed
-
-- 
-
-## Fixed
-
-- 
-
-## Security
-
--
-
 # How has this been tested?
 
 *Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce.*
 
 # Checklist
 
-- [ ] My code follows the style guidelines of this project.
 - [ ] I have performed a self-review of my own code.
 - [ ] I have commented my code, particularly in hard-to-understand areas.
 - [ ] I have updated the documentation, if necessary.
