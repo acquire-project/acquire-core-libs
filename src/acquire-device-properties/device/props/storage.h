@@ -19,18 +19,17 @@ extern "C"
         uint32_t first_frame_id;
         struct PixelScale pixel_scale_um;
 
-        /// Parameters for chunking.
-        /// Tile dimensions, width, height, and planes, are in pixels and
-        /// determine how to break up frames. Together with
-        /// `max_bytes_per_chunk`, they determine the dimensions of a chunk.
+        /// Dimensions of chunks, in pixels.
         struct storage_properties_chunking_s
         {
-            uint64_t max_bytes_per_chunk;
-            struct storage_properties_chunking_tile_s
-            {
-                uint32_t width, height, planes;
-            } tile;
-        } chunking;
+            uint32_t width, height, planes;
+        } chunk_dims_px;
+
+        /// Dimensions of shards, in chunks.
+        struct storage_properties_sharding_s
+        {
+            uint32_t width, height, planes;
+        } shard_dims_chunks;
 
         /// Enable multiscale storage if true.
         uint8_t enable_multiscale;
@@ -39,21 +38,26 @@ extern "C"
     struct StoragePropertyMetadata
     {
         /// Metadata for chunking.
-        /// Indicates whether chunking is supported, and if so, bounds on the
-        /// dimensions of tiles and the maximum number of bytes per chunk.
+        /// Indicates whether chunking is supported, and if so, bounds on what
+        /// the dimensions (in px) of the chunks are.
         struct storage_property_metadata_chunking_s
         {
-            uint8_t supported;
-            struct Property max_bytes_per_chunk;
-            struct storage_property_metadata_chunk_dim_s
-            {
-                struct Property width, height, planes;
-            } tile;
-        } chunking;
+            uint8_t is_supported;
+            struct Property width, height, planes;
+        } chunk_dims_px;
+
+        /// Metadata for sharding.
+        /// Indicates whether sharding is supported, and if so, bounds on what
+        /// the dimensions (in chunks) of the shards are.
+        struct storage_property_metadata_sharding_s
+        {
+            uint8_t is_supported;
+            struct Property width, height, planes;
+        } shard_dims_chunks;
 
         struct storage_property_metadata_multiscale_s
         {
-            uint8_t supported;
+            uint8_t is_supported;
         } multiscale;
     };
 
@@ -111,19 +115,32 @@ extern "C"
                                                  size_t bytes_of_metadata);
 
     /// @brief Set chunking properties for `out`.
-    /// Convenience function to set tiling/chunking properties in a single call.
+    /// Convenience function to set chunking properties in a single call.
     /// @returns 1 on success, otherwise 0
     /// @param[in, out] out The storage properties to change.
-    /// @param[in] tile_width The width, in px, of a tile.
-    /// @param[in] tile_height The height, in px, of a tile.
-    /// @param[in] tile_planes The number of @p tile_width x @p tile_height
-    ///            planes in a single tile.
-    /// @param[in] max_bytes_per_chunk The maximum size, in bytes, of a chunk.
+    /// @param[in] chunk_width The width, in px, of a chunk.
+    /// @param[in] chunk_height The height, in px, of a chunk.
+    /// @param[in] chunk_planes The number of @p chunk_width x @p chunk_height
+    ///            planes in a single chunk.
     int storage_properties_set_chunking_props(struct StorageProperties* out,
-                                              uint32_t tile_width,
-                                              uint32_t tile_height,
-                                              uint32_t tile_planes,
-                                              uint64_t max_bytes_per_chunk);
+                                              uint32_t chunk_width,
+                                              uint32_t chunk_height,
+                                              uint32_t chunk_planes);
+
+    /// @brief Set sharding properties for `out`.
+    /// Convenience function to set sharding properties in a single call.
+    /// @returns 1 on success, otherwise 0
+    /// @param[in, out] out The storage properties to change.
+    /// @param[in] shard_width The number of chunks in a shard along the x
+    ///            dimension.
+    /// @param[in] shard_height The number of chunks in a shard along the y
+    ///            dimension.
+    /// @param[in] shard_planes The number of chunks in a shard along the append
+    ///            dimension.
+    int storage_properties_set_sharding_props(struct StorageProperties* out,
+                                              uint32_t shard_width,
+                                              uint32_t shard_height,
+                                              uint32_t shard_planes);
 
     /// @brief Set multiscale properties for `out`.
     /// Convenience function to enable multiscale.

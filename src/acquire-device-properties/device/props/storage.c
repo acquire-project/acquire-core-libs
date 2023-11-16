@@ -76,18 +76,29 @@ storage_properties_set_external_metadata(struct StorageProperties* out,
 
 int
 storage_properties_set_chunking_props(struct StorageProperties* out,
-                                      uint32_t tile_width,
-                                      uint32_t tile_height,
-                                      uint32_t tile_planes,
-                                      uint64_t max_bytes_per_chunk)
+                                      uint32_t chunk_width,
+                                      uint32_t chunk_height,
+                                      uint32_t chunk_planes)
 {
     CHECK(out);
-    out->chunking.tile.width = tile_width;
-    out->chunking.tile.height = tile_height;
-    out->chunking.tile.planes = tile_planes;
-    // Use 16 MB default chunk size if 0 is passed in.
-    out->chunking.max_bytes_per_chunk =
-      max_bytes_per_chunk ? max_bytes_per_chunk : (1ULL << 24);
+    out->chunk_dims_px.width = chunk_width;
+    out->chunk_dims_px.height = chunk_height;
+    out->chunk_dims_px.planes = chunk_planes;
+    return 1;
+Error:
+    return 0;
+}
+
+int
+storage_properties_set_sharding_props(struct StorageProperties* out,
+                                      uint32_t shard_width,
+                                      uint32_t shard_height,
+                                      uint32_t shard_planes)
+{
+    CHECK(out);
+    out->shard_dims_chunks.width = shard_width;
+    out->shard_dims_chunks.height = shard_height;
+    out->shard_dims_chunks.planes = shard_planes;
     return 1;
 Error:
     return 0;
@@ -353,20 +364,40 @@ int
 unit_test__storage_properties_set_chunking_props()
 {
     struct StorageProperties props = { 0 };
-    CHECK(0 == props.chunking.tile.width);
-    CHECK(0 == props.chunking.tile.height);
-    CHECK(0 == props.chunking.tile.planes);
-    CHECK(0 == props.chunking.max_bytes_per_chunk);
+    CHECK(0 == props.chunk_dims_px.width);
+    CHECK(0 == props.chunk_dims_px.height);
+    CHECK(0 == props.chunk_dims_px.planes);
 
-    const uint32_t tile_width = 1, tile_height = 2, tile_planes = 3;
+    const uint32_t chunk_width = 1, chunk_height = 2, chunk_planes = 3;
     CHECK(storage_properties_set_chunking_props(
-      &props, tile_width, tile_height, tile_planes, 0));
+      &props, chunk_width, chunk_height, chunk_planes));
 
-    CHECK(tile_width == props.chunking.tile.width);
-    CHECK(tile_height == props.chunking.tile.height);
-    CHECK(tile_planes == props.chunking.tile.planes);
-    // This is the default value if you set bytes_per_chunk to 0
-    CHECK((1ULL << 24) == props.chunking.max_bytes_per_chunk);
+    CHECK(chunk_width == props.chunk_dims_px.width);
+    CHECK(chunk_height == props.chunk_dims_px.height);
+    CHECK(chunk_planes == props.chunk_dims_px.planes);
+
+    storage_properties_destroy(&props);
+
+    return 1;
+Error:
+    return 0;
+}
+
+int
+unit_test__storage_properties_set_sharding_props()
+{
+    struct StorageProperties props = { 0 };
+    CHECK(0 == props.shard_dims_chunks.width);
+    CHECK(0 == props.shard_dims_chunks.height);
+    CHECK(0 == props.shard_dims_chunks.planes);
+
+    const uint32_t shard_width = 1, shard_height = 2, shard_planes = 3;
+    CHECK(storage_properties_set_sharding_props(
+      &props, shard_width, shard_height, shard_planes));
+
+    CHECK(shard_width == props.shard_dims_chunks.width);
+    CHECK(shard_height == props.shard_dims_chunks.height);
+    CHECK(shard_planes == props.shard_dims_chunks.planes);
 
     storage_properties_destroy(&props);
 

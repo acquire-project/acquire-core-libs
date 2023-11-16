@@ -74,13 +74,14 @@ file_create(struct file* file, const char* filename, size_t bytes_of_filename)
 
     CHECK_HANDLE(file->hfile = CreateFileA(filename,
                                            GENERIC_WRITE,
-                                           FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                           FILE_SHARE_READ,
                                            0,
                                            CREATE_ALWAYS,
                                            FILE_FLAG_OVERLAPPED,
                                            0));
     return 1;
 Error:
+    LOGE("Could not create \"%s\"", filename);
     return 0;
 }
 
@@ -438,8 +439,7 @@ thread_join(struct thread* self)
     if (thread != INVALID_HANDLE_VALUE) {
         self->inner_ = INVALID_HANDLE_VALUE;
         TRACE("WFSO %p", thread);
-        WaitForSingleObject(thread,
-                            INFINITE);
+        WaitForSingleObject(thread, INFINITE);
         CloseHandle(thread);
     }
 }

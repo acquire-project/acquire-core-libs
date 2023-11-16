@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Users can specify the full chunk size in width, height, and planes. 
+
+### Removed
+
+- `max_bytes_per_chunk` from `StorageProperties` chunking properties.
+
 ### Fixed
 
 - Removes 30-second timeout from `thread_join` on Windows. 
@@ -17,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `acquire-device-properties`: A corresponding entry in `StoragePropertyMetadata`.
 - `acquire-device-properties`: A convenience function for enabling multiscale, similar to the function for
   setting chunking properties.
+- `acquire-device-properties`: A `struct storage_properties_sharding_s` member `shard_dims_chunks` of
+  `StorageProperties`. Users can now configure sharding properties where supported.
+- `acquire-device-properties`: A convenience function for setting sharding parameters.
 
 ## [0.1.3](https://github.com/acquire-project/acquire-core-libs/compare/v0.1.2...v0.1.3) - 2023-06-27
 
