@@ -12,11 +12,11 @@ extern "C"
 #endif
 
     /// @brief Stores the properties of a camera.
-    /// @details This can be populated with values from a camera.
-    ///          Or can be filled out to request new values a camera should adopt.
+    /// @details Can be populated with values from a camera or
+    ///          can be filled out to define new values that a camera should adopt.
     struct CameraProperties
     {
-        /// @brief The exposure time of a frame in microseconds.
+        /// @brief Exposure time of a frame in microseconds.
         /// @details Acquire assumes that exposure is always manually specified by this period of time.
         ///          It does not currently support auto-exposure or durations defined by trigger widths.
         float exposure_time_us;
@@ -24,30 +24,39 @@ extern "C"
         float line_interval_us;
         enum Direction readout_direction;
 
-        /// @brief The binning factor, which determines how many pixels in each spatial dimension on the sensor are aggregated to form pixels in an image.
-        /// @details For example, if we have a sensor of size 1920x1200 and a binning factor of 2, one image should be 960x600.
+        /// @brief Binning or downsample factor.
+        /// @details Determines how many pixels in each spatial dimension on the
+        ///          sensor are aggregated to form pixels in an image.
+        ///          For example, if we have a sensor of size 1920x1200 and a binning
+        ///          factor of 2, one image should be 960x600.
         uint8_t binning;
 
-        /// @brief The type of each image pixel or sample.
+        /// @brief Type of each image pixel or sample.
         enum SampleType pixel_type;
 
-        /// @brief The offset of the active image region of interest on the sensor from its top-left corner.
-        /// @details Each value represents a number of aggregated pixels in the frame after binning has been applied.
+        /// @brief Offset of the region of interest on the sensor from its top-left corner.
+        /// @details Each value represents a number of aggregated pixels in the
+        ///          frame after binning has been applied.
         struct camera_properties_offset_s
         {
             uint32_t x, y;
         } offset;
 
-        /// @brief The shape or size of the active region of interest on the sensor.
-        /// Each value represents a number of aggregated pixels in the frame after binning has been applied.
+        /// @brief Shape or size of the region of interest on the sensor.
+        /// @details Each value represents a number of aggregated pixels in the
+        ///          frame after binning has been applied.
         struct camera_properties_shape_s
         {
             uint32_t x, y;
         } shape;
+
+        /// @brief State of the camera's input triggers.
         struct camera_properties_input_triggers_s
         {
             struct Trigger acquisition_start, frame_start, exposure;
         } input_triggers;
+
+        /// @brief State of the camera's digital output lines.
         struct camera_properties_output_triggers_s
         {
             struct Trigger exposure, frame_start, trigger_wait;
@@ -55,8 +64,8 @@ extern "C"
     };
 
     /// @brief Stores the metadata about camera properties.
-    /// @details This is only used to request metadata from a camera, which
-    ///          expresses capabilities of the camera and acceptable property values.
+    /// @details Only used to request metadata from a camera, which expresses
+    ///          capabilities of the camera and acceptable property values.
     struct CameraPropertyMetadata
     {
         struct Property exposure_time_us;
@@ -72,7 +81,8 @@ extern "C"
             struct Property x, y;
         } shape;
 
-        /// bit field: bit i is 1 if SampleType(i) is supported, 0 otherwise
+        /// @brief The bits of this value describe the supported types.
+        /// @details Bit i is 1 if SampleType(i) is supported, 0 otherwise.
         uint64_t supported_pixel_types;
 
         struct CameraPropertyMetadataDigitalLineMetadata
@@ -89,9 +99,9 @@ extern "C"
         {
             struct camera_properties_metadata_trigger_capabilities_s
             {
-                /// @brief Bit x is set if line x can be used as a trigger input.
+                /// @brief Bit i is set if line i can be used as a trigger input.
                 uint8_t input;
-                /// @brief Bit x is set if line x can be used as a trigger output.
+                /// @brief Bit i is set if line i can be used as a trigger output.
                 uint8_t output;
             } acquisition_start, exposure, frame_start;
         } triggers;
