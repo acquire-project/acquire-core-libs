@@ -111,10 +111,10 @@ storage_set(struct Storage* self, const struct StorageProperties* settings)
     CHECK(self);
     CHECK(settings);
 
-    enum DeviceState state = self->set(self, settings);
-    EXPECT(DeviceState_Armed == state,
+    self->state = self->set(self, settings);
+    EXPECT(DeviceState_Armed == self->state,
            "Expected Armed. Got %s.",
-           device_state_as_string(state));
+           device_state_as_string(self->state));
 
     return Device_Ok;
 
