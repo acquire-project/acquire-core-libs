@@ -26,6 +26,25 @@ extern "C"
       const struct Storage* self,
       struct StoragePropertyMetadata* meta);
 
+    /// @brief Start the storage device.
+    /// @details This function signals the storage device that data is about to
+    /// begin streaming from the camera. Any preparation the device needs to do
+    /// should be handled here (e.g. opening a file or a network connection).
+    /// A successful call to this function will set self->state to
+    /// DeviceState_Running.
+    /// @returns Device_Ok if the device was started successfully, otherwise
+    /// Device_Err.
+    enum DeviceStatusCode storage_start(struct Storage* storage);
+
+    /// @brief Stop the storage device.
+    /// @details This function signals the storage device that no more data is
+    /// forthcoming. The device is free to close any open files or network
+    /// connections. A successful call to this function will set self->state to
+    /// DeviceState_Armed.
+    /// @returns Device_Ok if the device was stopped successfully, otherwise
+    /// Device_Err.
+    enum DeviceStatusCode storage_stop(struct Storage* storage);
+
     /// @brief Append data in `[beg,end)` to Storage
     /// @param[in] beg The beginning of the packet of frames to write.
     /// @param[in] end The end of the packet of frames to write.
@@ -33,7 +52,10 @@ extern "C"
                                          const struct VideoFrame* beg,
                                          const struct VideoFrame* end);
 
-    enum DeviceStatusCode storage_close(struct Storage* self);
+    /// @brief Close the storage device.
+    /// @details The storage device is deallocated and any resources it was
+    /// using are freed.
+    void storage_close(struct Storage* self);
 
     enum DeviceState storage_get_state(const struct Storage* self);
 
