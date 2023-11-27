@@ -138,7 +138,7 @@ storage_start(struct Storage* self)
     CHECK(self->state == DeviceState_Armed);
 
     enum DeviceStatusCode status_code;
-    switch (self->start(self)) {
+    switch (self->state = self->start(self)) {
         case DeviceState_Running:
             status_code = Device_Ok;
             break;
@@ -157,9 +157,9 @@ storage_stop(struct Storage* self)
 {
     enum DeviceStatusCode ecode = Device_Ok;
     CHECK(self);
+    CHECK(self->stop);
     if (self->state == DeviceState_Running) {
-        LOG("STORAGE STOP %s", self->device.identifier.name);
-        EXPECT(self->state == DeviceState_Armed ||
+        EXPECT((self->state = self->stop(self)) == DeviceState_Armed ||
                  self->state == DeviceState_AwaitingConfiguration,
                "Expected Armed or AwaitingConfiguration. Got state: %s.",
                device_state_as_string(self->state));
