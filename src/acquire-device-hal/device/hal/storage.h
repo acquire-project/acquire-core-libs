@@ -15,9 +15,19 @@ extern "C"
                          const struct DeviceIdentifier* identifier,
                          const struct StorageProperties* settings);
 
+    /// @brief Open a storage device identified by @p identifier.
+    /// @param[in] system The device manager.
+    /// @return A pointer to the storage device, or NULL if the device could not
+    /// be opened.
     struct Storage* storage_open(const struct DeviceManager* system,
-                                 const struct DeviceIdentifier* identifier,
-                                 struct StorageProperties* settings);
+                                 const struct DeviceIdentifier* identifier);
+
+    /// @brief Set the storage device properties.
+    /// @param[in] settings The properties to set.
+    /// @returns Device_Ok if the properties were set successfully, otherwise
+    /// Device_Err.
+    enum DeviceStatusCode storage_set(struct Storage* self,
+                                      const struct StorageProperties* settings);
 
     enum DeviceStatusCode storage_get(const struct Storage* self,
                                       struct StorageProperties* settings);

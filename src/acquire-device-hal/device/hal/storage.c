@@ -73,8 +73,7 @@ Error:
 
 struct Storage*
 storage_open(const struct DeviceManager* system,
-             const struct DeviceIdentifier* identifier,
-             struct StorageProperties* settings)
+             const struct DeviceIdentifier* identifier)
 {
     struct Storage* self = 0;
 
@@ -100,12 +99,27 @@ storage_open(const struct DeviceManager* system,
     CHECK(self->destroy != NULL);
     CHECK(self->reserve_image_shape != NULL);
 
-    self->state = self->set(self, settings);
-
     return self;
 Error:
     storage_close(self);
     return 0;
+}
+
+enum DeviceStatusCode
+storage_set(struct Storage* self, const struct StorageProperties* settings)
+{
+    CHECK(self);
+    CHECK(settings);
+
+    enum DeviceState state = self->set(self, settings);
+    EXPECT(DeviceState_Armed == state,
+           "Expected Armed. Got %s.",
+           device_state_as_string(state));
+
+    return Device_Ok;
+
+Error:
+    return Device_Err;
 }
 
 enum DeviceStatusCode
