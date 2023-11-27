@@ -176,6 +176,17 @@ Error:
 }
 
 enum DeviceStatusCode
+storage_destroy(struct Storage* self)
+{
+    CHECK(self);
+    CHECK(self->destroy);
+    self->destroy(self);
+    return Device_Ok;
+Error:
+    return Device_Err;
+}
+
+enum DeviceStatusCode
 storage_reserve_image_shape(struct Storage* self,
                             const struct ImageShape* shape)
 {
