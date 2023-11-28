@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Users can specify the full chunk size in width, height, and planes. 
+- Users can specify the full chunk size in width, height, and planes.
+- `acquire-device-hal`: `storage_open` no longer takes a `StorageProperties*` parameter.
 
 ### Removed
 
@@ -17,7 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Removes 30-second timeout from `thread_join` on Windows. 
+- Removes 30-second timeout from `thread_join` on Windows.
+- Memory leak in `copy_string`.
+- Avoid an unnecessary call to `realloc`.
 
 ### Added
 
@@ -28,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `acquire-device-properties`: A `struct storage_properties_sharding_s` member `shard_dims_chunks` of
   `StorageProperties`. Users can now configure sharding properties where supported.
 - `acquire-device-properties`: A convenience function for setting sharding parameters.
+- `acquire-device-hal`: `storage_start`, `storage_stop`, and `storage_set` functions.
 
 ## [0.1.3](https://github.com/acquire-project/acquire-core-libs/compare/v0.1.2...v0.1.3) - 2023-06-27
 
