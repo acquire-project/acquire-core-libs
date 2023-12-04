@@ -38,7 +38,8 @@ extern "C"
 
     /// @brief Start the storage device.
     /// @details This function signals the storage device that data is about to
-    /// begin streaming from the camera. Any preparation the device needs to do
+    /// begin streaming to the storage. Any preparation the device needs to do
+
     /// should be handled here (e.g. opening a file or a network connection).
     /// A successful call to this function will set self->state to
     /// DeviceState_Running.
