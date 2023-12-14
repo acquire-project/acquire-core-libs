@@ -32,12 +32,19 @@ copy_string(struct String* dst, const struct String* src)
         // dst string pointer refers to caller-allocated memory.
         // Allocate a new string on the heap.
         CHECK(dst->str = malloc(src->nbytes)); // NOLINT
+        dst->nbytes = src->nbytes;
         dst->is_ref = 0;                       // mark as owned
     }
 
     CHECK(dst->is_ref == 0);
     if (src->nbytes > dst->nbytes) {
-        CHECK(dst->str = realloc(dst->str, src->nbytes));
+        char* str = realloc(dst->str, src->nbytes);
+        if (!str) {
+            LOGE("Failed to allocate %llu bytes for string copy.",
+                 (unsigned long long)src->nbytes);
+            goto Error;
+        }
+        dst->str = str;
     }
 
     dst->nbytes = src->nbytes;

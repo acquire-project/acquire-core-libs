@@ -73,8 +73,7 @@ Error:
 
 struct Storage*
 storage_open(const struct DeviceManager* system,
-             const struct DeviceIdentifier* identifier,
-             struct StorageProperties* settings)
+             const struct DeviceIdentifier* identifier)
 {
     struct Storage* self = 0;
 
@@ -90,16 +89,37 @@ storage_open(const struct DeviceManager* system,
         self = containerof(device, struct Storage, device);
     }
 
-    if (self) {
-        self->state = self->set(self, settings);
-        CHECK(self->state == DeviceState_Armed);
-        self->state = self->start(self);
-        CHECK(self->state == DeviceState_Running);
-    }
+    // Check the required interface functions are non-null
+    CHECK(self->set != NULL);
+    CHECK(self->get != NULL);
+    CHECK(self->get_meta != NULL);
+    CHECK(self->start != NULL);
+    CHECK(self->append != NULL);
+    CHECK(self->stop != NULL);
+    CHECK(self->destroy != NULL);
+    CHECK(self->reserve_image_shape != NULL);
+
     return self;
 Error:
     storage_close(self);
     return 0;
+}
+
+enum DeviceStatusCode
+storage_set(struct Storage* self, const struct StorageProperties* settings)
+{
+    CHECK(self);
+    CHECK(settings);
+
+    self->state = self->set(self, settings);
+    EXPECT(DeviceState_Armed == self->state,
+           "Expected Armed. Got %s.",
+           device_state_as_string(self->state));
+
+    return Device_Ok;
+
+Error:
+    return Device_Err;
 }
 
 enum DeviceStatusCode
@@ -126,6 +146,47 @@ Error:
 }
 
 enum DeviceStatusCode
+storage_start(struct Storage* self)
+{
+    CHECK(self);
+    CHECK(self->state == DeviceState_Armed);
+
+    enum DeviceStatusCode status_code;
+    switch (self->state = self->start(self)) {
+        case DeviceState_Running:
+            status_code = Device_Ok;
+            break;
+        default:
+            status_code = Device_Err;
+            break;
+    }
+
+    return status_code;
+Error:
+    return Device_Err;
+}
+
+enum DeviceStatusCode
+storage_stop(struct Storage* self)
+{
+    enum DeviceStatusCode ecode = Device_Ok;
+    CHECK(self);
+    CHECK(self->stop);
+    if (self->state == DeviceState_Running) {
+        EXPECT((self->state = self->stop(self)) == DeviceState_Armed ||
+                 self->state == DeviceState_AwaitingConfiguration,
+               "Expected Armed or AwaitingConfiguration. Got state: %s.",
+               device_state_as_string(self->state));
+    }
+
+Finalize:
+    return ecode;
+Error:
+    ecode = Device_Err;
+    goto Finalize;
+}
+
+enum DeviceStatusCode
 storage_append(struct Storage* self,
                const struct VideoFrame* beg,
                const struct VideoFrame* end)
@@ -145,25 +206,15 @@ Error:
     return Device_Err;
 }
 
-enum DeviceStatusCode
+void
 storage_close(struct Storage* self)
 {
-    enum DeviceStatusCode ecode = Device_Ok;
-    CHECK_SILENT(self);
-    self->state = self->stop(self);
-    EXPECT(self->state == DeviceState_Armed ||
-             self->state == DeviceState_AwaitingConfiguration,
-           "Expected Armed or AwaitingConfiguration. Got state: %s.",
-           device_state_as_string(self->state));
-Finalize:
-    if (self) {
-        driver_close_device(&self->device);
-        self->state = DeviceState_Closed;
-    }
-    return ecode;
-Error:
-    ecode = Device_Err;
-    goto Finalize;
+    CHECK(self);
+    storage_stop(self);
+
+    driver_close_device(&self->device);
+    self->state = DeviceState_Closed;
+Error:;
 }
 
 enum DeviceState
