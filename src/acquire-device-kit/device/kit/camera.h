@@ -41,8 +41,10 @@ extern "C"
         enum DeviceStatusCode (*start)(struct Camera*);
 
         /// @brief Stops acquiring frames.
-        /// @details This is not guaranteed to wait or block until any pending
-        ///          frames have been acquired or the camera is actually stopped.
+        /// @details This instructs the camera to stop and may block until it
+        ///          actually has stopped acquiring frames.
+        ///          The camera should also be restartable after calling this
+        ///          (i.e. one call of start after one call of stop should succeed).
         enum DeviceStatusCode (*stop)(struct Camera*);
 
         /// @brief Execute the software trigger if it's enabled.
